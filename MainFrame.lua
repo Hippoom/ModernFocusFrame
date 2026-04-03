@@ -41,7 +41,8 @@ end
 function ModernFocusFrame:CreatePortrait()
     self.portraitFrame = CreateFrame("Frame", nil, self.frame)
     self.portraitFrame:SetAllPoints(self.frame)
-    self.portraitFrame:SetFrameLevel(self.frame:GetFrameLevel() - 1)
+    -- Use same or higher level than frame so portrait draws ON TOP of backdrop (was -1 = behind = invisible)
+    self.portraitFrame:SetFrameLevel(self.frame:GetFrameLevel() + 1)
 
     self.portrait = self.portraitFrame:CreateTexture(nil, "BACKGROUND")
     local portraitSize = self.frame:GetHeight() * 0.442
@@ -153,7 +154,7 @@ end
 function ModernFocusFrame:CreateToFPortrait()
     self.tofPortraitFrame = CreateFrame("Frame", nil, self.TargetOfFocusFrame)
     self.tofPortraitFrame:SetAllPoints(self.TargetOfFocusFrame)
-    self.tofPortraitFrame:SetFrameLevel(self.TargetOfFocusFrame:GetFrameLevel() - 1)
+    self.tofPortraitFrame:SetFrameLevel(self.TargetOfFocusFrame:GetFrameLevel() + 1)
 
     self.tofPortrait = self.tofPortraitFrame:CreateTexture(nil, "BACKGROUND")
     local tofPortraitSize = self.TargetOfFocusFrame:GetHeight() * 0.515
