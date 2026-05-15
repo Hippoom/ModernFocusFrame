@@ -7,8 +7,7 @@ function ModernFocusFrame:UNIT_HEALTH(unit)
     if unit and unitGUID then
         if self.focusGUID == unitGUID then
 			if UnitIsDead(unit) then
-                self.TargetOfFocusFrame:Hide()
-				self.tofocusGUID = nil
+                self:ClearModernToFocusFrame()
                 return
             end
             self:UpdateModernFocusFrame()
@@ -63,10 +62,11 @@ function ModernFocusFrame:UNIT_CASTEVENT(casterGUID, targetGUID, eventType, spel
         end
 		
 		if not targetGUID or targetGUID == "" then
+            self:ClearModernToFocusFrame()
             return
         end
-		
-		if targetGUID and targetGUID ~= self.tofocusGUID then
+
+		if targetGUID ~= self.tofocusGUID then
             self.tofocusGUID = targetGUID
             self:UpdateModernToFocusFrame()
         end

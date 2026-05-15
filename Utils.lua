@@ -10,7 +10,7 @@ function ModernFocusFrame:UpdateModernFocusFrame()
         local unit = self.focusGUID
         if not UnitExists(unit) then
             self.frame:Hide()
-			self.TargetOfFocusFrame:Hide()
+            self:ClearModernToFocusFrame()
             return
         end
 
@@ -76,11 +76,22 @@ end
 -----------------------------------
 -- Target of Focus Frame Updates --
 -----------------------------------
+function ModernFocusFrame:ClearModernToFocusFrame()
+    if not self.tofocusGUID and not self.TargetOfFocusFrame:IsShown() then
+        return
+    end
+
+    self.tofocusGUID = nil
+    self.TargetOfFocusFrame:Hide()
+    self.tofHealthBar:Hide()
+    self.tofPortraitFrame:Hide()
+end
+
 function ModernFocusFrame:UpdateModernToFocusFrame()
     if self.tofocusGUID then
         local unit = self.tofocusGUID
         if not UnitExists(unit) then
-            self.TargetOfFocusFrame:Hide()
+            self:ClearModernToFocusFrame()
             return
         end
 
@@ -164,7 +175,7 @@ function ModernFocusFrame:SaveScale(newScale)
     self:RegisterEvent("UNIT_LEVEL")
     self:RegisterEvent("UNIT_CASTEVENT")
 
-    self.frame:SetScript("OnUpdate", function(_, elapsed) self:OnUpdate(elapsed) end)
+    self.frame:SetScript("OnUpdate", function() self:OnUpdate(arg1) end)
 end
 
 local originalSaveScale = ModernFocusFrame.SaveScale
