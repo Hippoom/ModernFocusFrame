@@ -9,6 +9,7 @@ SlashCmdList["MFF"] = function(msg)
         DEFAULT_CHAT_FRAME:AddMessage("/mff focus - Set current target as focus")
         DEFAULT_CHAT_FRAME:AddMessage("/mff mouse - Set mouseover target as focus")
         DEFAULT_CHAT_FRAME:AddMessage("/mff scale <value> - Set frame scale (e.g., /mff scale 1.2)")
+        DEFAULT_CHAT_FRAME:AddMessage("/mff style <classic|dragonflight> - Set frame style")
         DEFAULT_CHAT_FRAME:AddMessage("/mff lock - Toggle frame dragging lock/unlock")
         DEFAULT_CHAT_FRAME:AddMessage("/mff cast <spell> - Cast spell on focus without changing target")
         return
@@ -62,6 +63,17 @@ SlashCmdList["MFF"] = function(msg)
             DEFAULT_CHAT_FRAME:AddMessage("ModernFocusFrame: Scale set to " .. newScale)
         else
             DEFAULT_CHAT_FRAME:AddMessage("Usage: /mff scale <number> (e.g., /mff scale 1.2)")
+        end
+
+    elseif command == "style" then
+        if arg == "classic" or arg == "dragonflight" then
+            ModernFocusFrame:SaveStyle(arg)
+            DEFAULT_CHAT_FRAME:AddMessage("ModernFocusFrame: Style set to " .. arg)
+        elseif arg == "" then
+            DEFAULT_CHAT_FRAME:AddMessage("ModernFocusFrame: Current style is " .. (ModernFocusFrame.db.profile.style or "classic"))
+            DEFAULT_CHAT_FRAME:AddMessage("Usage: /mff style <classic|dragonflight>")
+        else
+            DEFAULT_CHAT_FRAME:AddMessage("Usage: /mff style <classic|dragonflight>")
         end
 
     elseif command == "lock" then

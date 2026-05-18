@@ -57,6 +57,9 @@ function ModernFocusFrame:UpdateModernFocusFrame()
         if isDead then
             self.healthText:Hide()
             self.deadText:Show()
+        elseif self:IsDragonflightStyle() then
+            self.healthText:Hide()
+            self.deadText:Hide()
         else
             self.healthText:SetText(hp)
             self.healthText:Show()
@@ -71,13 +74,16 @@ function ModernFocusFrame:UpdateModernFocusFrame()
 
         if powerType == 1 then
             self.manaBar:SetStatusBarColor(1, 0, 0)
-            self.manaText:SetText(power)
         elseif powerType == 3 then
             self.manaBar:SetStatusBarColor(1, 1, 0)
-            self.manaText:SetText(power)
         else
             self.manaBar:SetStatusBarColor(0, 0, 1)
+        end
+        if self:IsDragonflightStyle() then
+            self.manaText:Hide()
+        else
             self.manaText:SetText(power)
+            self.manaText:Show()
         end
 
         SetPortraitTexture(self.portrait, unit)
@@ -115,6 +121,8 @@ function ModernFocusFrame:ClearModernToFocusFrame()
     self.TargetOfFocusFrame:Hide()
     self.tofHealthBar:Hide()
     self.tofPortraitFrame:Hide()
+    self:UpdateDragonflightAuraPosition()
+    self:UpdateDragonflightCastBarPosition()
 end
 
 function ModernFocusFrame:UpdateModernToFocusFrame()
@@ -139,6 +147,8 @@ function ModernFocusFrame:UpdateModernToFocusFrame()
 		self.tofHealthBar:Show()
 		self.tofPortraitFrame:Show()
         self.TargetOfFocusFrame:Show()
+        self:UpdateDragonflightAuraPosition()
+        self:UpdateDragonflightCastBarPosition()
     end
 end
 
@@ -155,19 +165,31 @@ function ModernFocusFrame:LoadScale()
     self.scale = ModernFocusFrameDB.scale
 end
 
-function ModernFocusFrame:SaveScale(newScale)
-    ModernFocusFrameDB.scale = newScale
-    self.scale = newScale
+function ModernFocusFrame:RebuildFrames()
+    local focusGUID = self.focusGUID
+    local tofocusGUID = self.tofocusGUID
 
     if self.frame then
+        self.frame:SetScript("OnUpdate", nil)
+        self.frame:SetScript("OnClick", nil)
+        self.frame:SetScript("OnEnter", nil)
+        self.frame:SetScript("OnLeave", nil)
         self.frame:Hide()
         self.frame = nil
     end
 
 	if self.TargetOfFocusFrame then
+        self.TargetOfFocusFrame:SetScript("OnClick", nil)
+        self.TargetOfFocusFrame:SetScript("OnEnter", nil)
+        self.TargetOfFocusFrame:SetScript("OnLeave", nil)
         self.TargetOfFocusFrame:Hide()
         self.TargetOfFocusFrame = nil
     end
+    self.castBarLayoutTargetOfFocus = nil
+    self.castBarLayoutBuff1 = nil
+    self.castBarLayoutDebuff1 = nil
+    self.castBarLayoutScale = nil
+    self.auraPositionScale = nil
 
 	self:LoadScale()
     self:CreateMainFrame()
@@ -189,8 +211,8 @@ function ModernFocusFrame:SaveScale(newScale)
         self:EnableDragging()
     end
 
-    self.focusGUID = nil
-	self.tofocusGUID = nil
+    self.focusGUID = focusGUID
+	self.tofocusGUID = tofocusGUID
     self:RegisterEvent("UNIT_HEALTH")
     self:RegisterEvent("UNIT_MANA")
     self:RegisterEvent("UNIT_RAGE")
@@ -199,15 +221,27 @@ function ModernFocusFrame:SaveScale(newScale)
     self:RegisterEvent("UNIT_CASTEVENT")
 
     self.frame:SetScript("OnUpdate", function() self:OnUpdate(arg1) end)
-end
-
-local originalSaveScale = ModernFocusFrame.SaveScale
-function ModernFocusFrame:SaveScale(newScale)
-    originalSaveScale(self, newScale)
     self:InitBuffsModule()
+
     if self.focusGUID then
+        self.frame:Show()
+        self:UpdateModernFocusFrame()
         self:ScanAndCacheAuras()
     end
+    if self.tofocusGUID then
+        self:UpdateModernToFocusFrame()
+    end
+end
+
+function ModernFocusFrame:SaveScale(newScale)
+    ModernFocusFrameDB.scale = newScale
+    self.scale = newScale
+    self:RebuildFrames()
+end
+
+function ModernFocusFrame:SaveStyle(style)
+    self.db.profile.style = style
+    self:RebuildFrames()
 end
 
 ---------------------------

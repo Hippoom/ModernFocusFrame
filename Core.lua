@@ -7,6 +7,7 @@ function ModernFocusFrame:OnInitialize()
     self:RegisterDefaults("profile", {
         position = { "CENTER", "UIParent", "CENTER", 0, 0 },
         isDraggingEnabled = false,
+        style = "classic",
     })
 
     self:LoadScale()

@@ -26,11 +26,23 @@ function ModernFocusFrame:InitBuffsModule()
     self:SetupAuraTooltips()
 end
 
+function ModernFocusFrame:UpdateDragonflightAuraPosition(force)
+    if not self:IsDragonflightStyle() or not self.buffsContainer or not self.manaBar then return end
+    if not force and self.auraPositionScale == self.scale then return end
+    self.auraPositionScale = self.scale
+
+    self.buffsContainer:ClearAllPoints()
+    self.buffsContainer:SetPoint("TOPLEFT", self.manaBar, "BOTTOMLEFT", 0, -8 * self.scale)
+end
+
 function ModernFocusFrame:CreateBuffFrames()
     -- Create buff container frame
     self.buffsContainer = CreateFrame("Frame", nil, self.frame)
-    -- Position buffs BELOW the cast bar
-    self.buffsContainer:SetPoint("BOTTOMLEFT", self.castBar, "TOPLEFT", -17 * self.scale, 32 * self.scale)
+    if self:IsDragonflightStyle() then
+        self:UpdateDragonflightAuraPosition(true)
+    else
+        self.buffsContainer:SetPoint("BOTTOMLEFT", self.castBar, "TOPLEFT", -17 * self.scale, 32 * self.scale)
+    end
     self.buffsContainer:SetWidth((self.BUFF_SIZE + self.BUFF_SPACING) * self.MAX_BUFFS - self.BUFF_SPACING)
     self.buffsContainer:SetHeight(self.BUFF_SIZE)
     
@@ -248,6 +260,9 @@ function ModernFocusFrame:UpdateAurasDisplay()
             debuffFrame:Hide()
         end
     end
+
+    self:UpdateDragonflightAuraPosition()
+    self:UpdateDragonflightCastBarPosition()
 end
 
 function ModernFocusFrame:SetupAuraTooltips()

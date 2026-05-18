@@ -62,6 +62,7 @@ function ModernFocusFrame:UNIT_CASTEVENT(casterGUID, targetGUID, eventType, spel
 		
 		if not targetGUID or targetGUID == "" then
             self:ClearModernToFocusFrame()
+            self:UpdateDragonflightCastBarPosition()
             return
         end
 
@@ -69,6 +70,7 @@ function ModernFocusFrame:UNIT_CASTEVENT(casterGUID, targetGUID, eventType, spel
             self.tofocusGUID = targetGUID
             self:UpdateModernToFocusFrame()
         end
+        self:UpdateDragonflightCastBarPosition()
     end
 end
 

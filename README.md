@@ -35,6 +35,7 @@ It tracks your focus target’s:
 📌 **Clear mouseover focus:** `/mff mouse clear`  
 📌 **Cast a spell on focus target:** `/mff cast <spell>` *(Example: `/mff cast Fireball(Rank 2)`)*  
 📌 **Change frame scale:** `/mff scale <value>` *(Example: `/mff scale 1.2`)*  
+📌 **Change frame style:** `/mff style <classic|dragonflight>`  
 📌 **Lock/unlock frame dragging:** `/mff lock`  
 
 ---
@@ -46,6 +47,13 @@ You can now change the scale **without editing files!** Use:
 ```
 📏 **Higher values = Bigger frame**  
 📝 **Lower values = Smaller frame**  
+
+### Change Frame Style In-Game
+Switch between the default look and the Dragonflight-inspired style:
+```
+/mff style classic
+/mff style dragonflight
+```
 
 ---
 ## ✨ Preview  
