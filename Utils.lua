@@ -5,6 +5,36 @@
 ------------------------
 local ModernFocusFrame = ModernFocusFrame
 
+local function GetHealthBarColor(unit)
+    if UnitIsPlayer(unit) then
+        local _, classToken = UnitClass(unit)
+        local classColor = classToken and RAID_CLASS_COLORS[classToken]
+        if classColor then
+            return classColor.r, classColor.g, classColor.b
+        end
+    end
+
+    local canAttack = UnitCanAttack("player", unit)
+    if canAttack and UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+        return 0.5, 0.5, 0.5
+    end
+
+    local reaction = UnitReaction("player", unit)
+    if reaction then
+        if reaction >= 5 then
+            return 0.2, 0.9, 0.2
+        elseif reaction == 4 then
+            return 1.0, 0.85, 0.1
+        end
+    end
+
+    if canAttack then
+        return 0.9, 0.1, 0.1
+    end
+
+    return 0.2, 0.9, 0.2
+end
+
 function ModernFocusFrame:UpdateModernFocusFrame()
     if self.focusGUID then
         local unit = self.focusGUID
@@ -20,20 +50,20 @@ function ModernFocusFrame:UpdateModernFocusFrame()
         local hp, hpMax = UnitHealth(unit), UnitHealthMax(unit)
         local powerType = UnitPowerType(unit)
         local power, powerMax = UnitMana(unit), UnitManaMax(unit)
+        local isDead = UnitIsDead(unit)
 
         self.healthBar:SetMinMaxValues(0, hpMax)
         self.healthBar:SetValue(hp)
-        self.healthText:SetText(hp)
+        if isDead then
+            self.healthText:Hide()
+            self.deadText:Show()
+        else
+            self.healthText:SetText(hp)
+            self.healthText:Show()
+            self.deadText:Hide()
+        end
 
-		local classFileName = UnitClass(unit)
-		local classColor = RAID_CLASS_COLORS[string.upper(classFileName)]
-
-		if classColor then
-			self.healthBar:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
-		else
-			-- Default color if class not found or is nil
-			self.healthBar:SetStatusBarColor(0, 1, 0) -- Default to green if class color is not found
-		end
+        self.healthBar:SetStatusBarColor(GetHealthBarColor(unit))
 
 
         self.manaBar:SetMinMaxValues(0, powerMax)
@@ -102,14 +132,7 @@ function ModernFocusFrame:UpdateModernToFocusFrame()
         self.tofHealthBar:SetMinMaxValues(0, hpMax)
         self.tofHealthBar:SetValue(hp)
 
-		local classFileName = UnitClass(unit)
-		local classColor = RAID_CLASS_COLORS[string.upper(classFileName)]
-
-		if classColor then
-			self.tofHealthBar:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
-		else
-			self.tofHealthBar:SetStatusBarColor(0, 1, 0)
-		end
+        self.tofHealthBar:SetStatusBarColor(GetHealthBarColor(unit))
 
         SetPortraitTexture(self.tofPortrait, unit)
 

@@ -6,9 +6,8 @@ function ModernFocusFrame:UNIT_HEALTH(unit)
     local _, unitGUID = UnitExists(unit)
     if unit and unitGUID then
         if self.focusGUID == unitGUID then
-			if UnitIsDead(unit) then
+            if UnitIsDead(unit) then
                 self:ClearModernToFocusFrame()
-                return
             end
             self:UpdateModernFocusFrame()
         elseif self.tofocusGUID == unitGUID then

@@ -104,6 +104,13 @@ function ModernFocusFrame:CreateTextElements()
     self.healthText:SetPoint("CENTER", self.healthBar, "CENTER", 0, -4)
     self.healthText:SetFont(font, fontSize, flags)
 
+    self.deadText = self.healthBar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    self.deadText:SetPoint("CENTER", self.healthBar, "CENTER", 0, -4)
+    self.deadText:SetFont(font, fontSize, flags)
+    self.deadText:SetTextColor(0.7, 0.7, 0.7)
+    self.deadText:SetText(DEAD or "Dead")
+    self.deadText:Hide()
+
     self.manaText = self.manaBar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     self.manaText:SetPoint("CENTER", self.manaBar, "CENTER", 0, 0)
     self.manaText:SetFont(font, fontSize * 0.95, flags)
