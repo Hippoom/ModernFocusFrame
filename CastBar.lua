@@ -18,10 +18,12 @@ function ModernFocusFrame:UpdateDragonflightCastBarPosition(force)
     self.castBarLayoutScale = self.scale
 
     local y = -24 * self.scale
-    if targetOfFocus or buff1 then
-        y = y - 25 * self.scale
-    end
     if debuff1 then
+        -- Always skip both rows (buffs + debuffs) when debuffs are visible,
+        -- because the buffs container still occupies vertical space even when empty
+        y = y - 50 * self.scale
+    elseif targetOfFocus or buff1 then
+        -- Only skip buffs row
         y = y - 25 * self.scale
     end
 
